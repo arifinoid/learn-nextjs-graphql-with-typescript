@@ -1,7 +1,9 @@
-import * as React from 'react'
-import Link from 'next/link'
-import Layout from '../components/Layout'
-import { NextPage } from 'next'
+import * as React from "react";
+import Link from "next/link";
+import Layout from "../components/Layout";
+import { NextPage } from "next";
+import { Mutation } from "react-apollo";
+import { gql } from "apollo-boost";
 
 const IndexPage: NextPage = () => {
   return (
@@ -12,8 +14,32 @@ const IndexPage: NextPage = () => {
           <a>About</a>
         </Link>
       </p>
-    </Layout>
-  )
-}
 
-export default IndexPage
+      <Mutation
+        mutation={gql`
+          mutation {
+            login(email: "skuy@living.com", password: "skuy") {
+              id
+              firstName
+              lastName
+              email
+            }
+          }
+        `}
+      >
+        {(mutate: () => void) => (
+          <button
+            onClick={async () => {
+              const response = await mutate();
+              console.log(response);
+            }}
+          >
+            call login mutation
+          </button>
+        )}
+      </Mutation>
+    </Layout>
+  );
+};
+
+export default IndexPage;
