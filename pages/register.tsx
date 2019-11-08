@@ -22,16 +22,34 @@ const register = () => {
           }) => void
         ) => (
           <Formik
+            validateOnBlur={false}
+            validateOnChange={false}
             initialValues={{
               firstName: "",
               lastName: "",
               email: "",
               password: ""
             }}
-            onSubmit={async data => {
-              const response = await register({ variables: { data } });
+            onSubmit={async (data, { setErrors }) => {
+              try {
+                const response = await register({ variables: { data } });
 
-              console.log(response);
+                console.log(response);
+              } catch (error) {
+                const errors: { [key: string]: string } = {};
+
+                error.graphQLErrors[0].extensions.exception.validationErrors.forEach(
+                  (validationError: any) => {
+                    Object.values(validationError.constraints).forEach(
+                      (message: any) => {
+                        errors[validationError.property] = message;
+                      }
+                    );
+                  }
+                );
+
+                setErrors(errors);
+              }
             }}
           >
             {({ handleSubmit }) => (
