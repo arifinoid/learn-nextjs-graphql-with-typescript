@@ -4,6 +4,7 @@ import { Formik, Field } from "formik";
 import Layout from "../components/Layout";
 import { InputField } from "../components/fields/InputField";
 import { RegisterComponent } from "../generated/apolloComponents";
+import { Router } from "../server/routes";
 
 const register = () => {
   return (
@@ -34,6 +35,7 @@ const register = () => {
               try {
                 const response = await register({ variables: { data } });
 
+                Router.push("/check-email");
                 console.log(response);
               } catch (error) {
                 const errors: { [key: string]: string } = {};
