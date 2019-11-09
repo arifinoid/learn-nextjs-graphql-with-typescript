@@ -27,6 +27,16 @@ export type Upload = any;
 // Documents
 // ====================================================
 
+export type ConfirmUserVariables = {
+  token: string;
+};
+
+export type ConfirmUserMutation = {
+  __typename?: "Mutation";
+
+  confirmUser: boolean;
+};
+
 export type LoginVariables = {
   email: string;
   password: string;
@@ -48,6 +58,8 @@ export type LoginLogin = {
   lastName: string;
 
   email: string;
+
+  name: string;
 };
 
 export type RegisterVariables = {
@@ -74,14 +86,57 @@ export type RegisterRegister = {
   name: string;
 };
 
-import gql from "graphql-tag";
-import * as React from "react";
 import * as ReactApollo from "react-apollo";
+import * as React from "react";
+
+import gql from "graphql-tag";
 
 // ====================================================
 // Components
 // ====================================================
 
+export const ConfirmUserDocument = gql`
+  mutation ConfirmUser($token: String!) {
+    confirmUser(token: $token)
+  }
+`;
+export class ConfirmUserComponent extends React.Component<
+  Partial<ReactApollo.MutateProps<ConfirmUserMutation, ConfirmUserVariables>>
+> {
+  render() {
+    return (
+      <ReactApollo.Mutation<ConfirmUserMutation, ConfirmUserVariables>
+        mutation={ConfirmUserDocument}
+        {...((this as any)["props"] as any)}
+      />
+    );
+  }
+}
+export type ConfirmUserProps<TChildProps = any> = Partial<
+  ReactApollo.MutateProps<ConfirmUserMutation, ConfirmUserVariables>
+> &
+  TChildProps;
+export type ConfirmUserMutationFn = ReactApollo.MutationFunction<
+  ConfirmUserMutation,
+  ConfirmUserVariables
+>;
+export function ConfirmUserHOC<TProps, TChildProps = any>(
+  operationOptions:
+    | ReactApollo.OperationOption<
+        TProps,
+        ConfirmUserMutation,
+        ConfirmUserVariables,
+        ConfirmUserProps<TChildProps>
+      >
+    | undefined
+) {
+  return ReactApollo.graphql<
+    TProps,
+    ConfirmUserMutation,
+    ConfirmUserVariables,
+    ConfirmUserProps<TChildProps>
+  >(ConfirmUserDocument, operationOptions);
+}
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -89,6 +144,7 @@ export const LoginDocument = gql`
       firstName
       lastName
       email
+      name
     }
   }
 `;
